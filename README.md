@@ -7,7 +7,8 @@ Experiment codes for paper "Su, Baozhuo, et al. "Enhanced ECG Arrhythmia Detecti
 ├── README.md
 ├── LICENSE
 ├── Regular.py                     # Self-building Python library
-├── preprocess_experiments.ipynb   # Results for preprocessing and expriments. 
+├── preprocess.ipynb               # Results for data preprocessing
+├── experiments.ipynb              # Results for different model
 └── algorithme/                    # Dictionary contains algorithme to process gaussian and non-gaussian features.
 ```
 
