@@ -1,0 +1,46 @@
+import numpy as np
+from scipy.stats import entropy
+from scipy.optimize import minimize
+from sklearn.neighbors import KernelDensity
+import matplotlib.pyplot as plt
+import antropy as ant
+
+
+def kl_divergence(p, q):
+    """Compute KL divergence of two vectors, K(p || q)."""
+    return np.sum(np.where(p != 0, p * np.log(p / q), 0))
+
+def transformation_cost(params, data_B, kde_A):
+    """Compute the KL divergence between KDE of transformed data and KDE of data_A."""
+    C, D = params
+    transformed_data = C * data_B + D
+
+    # Compute KDE for transformed data
+    kde_B_transformed = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(transformed_data.reshape(-1, 1))
+    q = np.exp(kde_B_transformed.score_samples(transformed_data.reshape(-1, 1)))
+
+    # Get density values for A
+    p = np.exp(kde_A.score_samples(transformed_data.reshape(-1, 1)))
+
+    # Return KL divergence
+    return kl_divergence(p, q)
+
+def compute_transformation(data_A, data_B,C_initial=1):
+    """Compute the best transformation (scaling and shift) for data_B."""
+
+    # Compute KDE for data_A
+    kde_A = KernelDensity(kernel='gaussian', bandwidth=0.5).fit(data_A.reshape(-1, 1))
+
+    # Optimize transformation parameters
+    initial_params = [C_initial,0]
+    result = minimize(transformation_cost, initial_params, args=(data_B, kde_A))
+    print("Converged:", result.success)
+    print("Minimum KL divergence:", result.fun)
+
+
+
+    return result.x  # C and D
+
+def transform(data, C, D):
+    """Apply transformation to the data."""
+    return C * data + D
