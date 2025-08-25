@@ -1,0 +1,22 @@
+import numpy as np
+import matplotlib.pyplot as plt
+import antropy as ant
+from scipy.stats import ttest_ind, ks_2samp
+
+
+
+def gaussian_transform(A, B):
+    """
+    Transforms the data in B to have the same Gaussian distribution as A.
+    :param A: Reference data with Gaussian distribution.
+    :param B: Data to be transformed.
+    :return: Transformed B.
+    """
+    mu_A = np.mean(A)
+    sigma_A = np.std(A)
+
+    mu_B = np.mean(B)
+    sigma_B = np.std(B)
+
+    transformed_B = sigma_A / sigma_B * (B - mu_B) + mu_A
+    return transformed_B
